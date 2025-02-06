@@ -1,0 +1,20 @@
+{
+  "name": "todolist-node",
+  "version": "1.0.0",
+  "description": "A web version of todolist",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "node ."
+  },
+  "author": "Jeremy Payet",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mocha": "^11.0.1",
+    "todolist-node": "file:"
+  }
+}
