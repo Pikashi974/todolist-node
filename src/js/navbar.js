@@ -1,6 +1,8 @@
 async function createNavbar() {
   let data = await fetch("/navbar").then((res) => res.json());
-  let isAuthenticated = localStorage.user != undefined;
+  let isAuthenticated =
+    localStorage.user != undefined &&
+    JSON.parse(localStorage.user).jwt != undefined;
   let MainMenuItems = data.data.MainMenuItems;
   document.querySelector("#navbarColor02").innerHTML = `
                 <ul class="navbar-nav me-auto">
@@ -37,7 +39,7 @@ async function createNavbar() {
                                             <div>
                                                 <label for="emailConnexion" class="form-label mt-4">Adresse Mail</label>
                                                 <input required="" type="email" class="form-control" id="emailConnexion" aria-describedby="emailHelp"
-                                                    placeholder="Entrez votre mail" autocomplete="on" name="mail">
+                                                    placeholder="Entrez votre mail" autocomplete="on" name="identifier">
                                                 <small id="emailHelp" class="form-text text-muted">Votre email est privé et ne sera pas partagé</small>
                                             </div>
                                             <div>
@@ -62,7 +64,7 @@ async function createNavbar() {
                                             <div>
                                                 <label for="emailInscription" class="form-label mt-4">Adresse Mail</label>
                                                 <input required type="email" class="form-control" id="emailInscription" aria-describedby="emailHelp"
-                                                    placeholder="Entrez votre mail" autocomplete="on">
+                                                    placeholder="Entrez votre mail" autocomplete="on" name="email">
                                                 <small id="emailHelp" class="form-text text-muted">Votre email est privé et ne sera pas partagé</small>
                                             </div>
                                             <div>
@@ -87,21 +89,65 @@ async function createNavbar() {
                 </div>
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Connexion/Inscription</button>`
                 }
-    
     `;
-  //   if (document.querySelector("button[type=submit]") != null) {
-  //     document
-  //       .querySelector("#connectForm")
-  //       .addEventListener("submit", (event) => {
-  //         console.log(event);
-  //         event.preventDefault();
-  //       });
-  //     document
-  //       .querySelector("#subscribeForm")
-  //       .addEventListener("submit", (event) => {
-  //         console.log(event);
-  //         event.preventDefault();
-  //       });
-  //   }
+  if (document.querySelector("button[type=submit]") != null) {
+    document
+      .querySelector("#connectForm")
+      .addEventListener("submit", async (event) => {
+        event.preventDefault();
+        var data = new FormData(event.target);
+
+        var object = {};
+        data.forEach(function (value, key) {
+          object[key] = value;
+        });
+        var json = JSON.stringify(object);
+
+        var requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: json,
+          redirect: "follow",
+        };
+        let response = await fetch("/connect", requestOptions).then((res) =>
+          res.json()
+        );
+        if (response.jwt == null) {
+          alert("Erreur invalides");
+        } else {
+          localStorage.setItem("user", JSON.stringify(response));
+          window.location.reload();
+        }
+      });
+    document
+      .querySelector("#subscribeForm")
+      .addEventListener("submit", async (event) => {
+        // console.log(event);
+        event.preventDefault();
+        var data = new FormData(event.target);
+
+        var object = {};
+        data.forEach(function (value, key) {
+          object[key] = value;
+        });
+        var json = JSON.stringify(object);
+
+        var requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: json,
+          redirect: "follow",
+        };
+        let response = await fetch("/subscribe", requestOptions).then((res) =>
+          res.json()
+        );
+        if (response.jwt == null) {
+          alert("Erreur invalides");
+        } else {
+          localStorage.setItem("user", JSON.stringify(response));
+          window.location.reload();
+        }
+      });
+  }
 }
 createNavbar();

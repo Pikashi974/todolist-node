@@ -27,15 +27,53 @@ app.get("/navbar", async (req, res) => {
     ).then((res) => res.json())
   );
 });
-app.post("/connect", (req, res) => {
-  //   console.log(req.body);
+app.post("/connect", async (req, res) => {
+  // console.log(req.body);
+  var formdata = new FormData();
+  formdata.append("identifier", req.body.identifier);
+  formdata.append("password", req.body.password);
 
-  res.send("Connect");
+  var requestOptions = {
+    method: "POST",
+    body: formdata,
+    redirect: "follow",
+  };
+
+  let response = await fetch(
+    process.env.LINK_API + "/api/auth/local",
+    requestOptions
+  )
+    .then((res) => res.json())
+    .catch((error) => console.log("error", error));
+  console.log(response);
+  res.send(response);
 });
-app.post("/subscribe", (req, res) => {
-  //   console.log(req.body);
-  res.send("Subscribe");
+app.post("/subscribe", async (req, res) => {
+  console.log(req.body);
+  if (req.body.password == req.body.password2) {
+    let response = await fetch(
+      process.env.LINK_API + "/api/auth/local/register",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: req.body.username,
+          email: req.body.email,
+          password: req.body.password,
+        }),
+      }
+    ).then((res) => res.json());
+    // console.log(response);
+    // localStorage.setItem("user", response);
+
+    res.send(response);
+  }
+
+  res.sendStatus(400);
 });
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
