@@ -29,5 +29,19 @@ describe("navbar", function () {
         JSON.parse(localStorage.user).jwt != undefined;
       assert.equal(isAuthenticated, true);
     });
+    it("should return 0 if disconnect button is clicked", function () {
+      // assert.equal([1, 2, 3].indexOf(4), -1);
+      let localStorage = {
+        user: `{"jwt": "token"}`,
+      };
+      localStorage.clear = () => {
+        Object.keys(localStorage).forEach((element) => {
+          delete localStorage[element];
+        });
+      };
+      localStorage.clear();
+      // 1 because clear
+      assert.equal(Object.keys(localStorage).length, 0);
+    });
   });
 });

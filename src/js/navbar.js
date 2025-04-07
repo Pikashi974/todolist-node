@@ -19,7 +19,7 @@ async function createNavbar() {
             </ul>
                 ${
                   isAuthenticated
-                    ? `<button type="button" class="btn btn-danger">Déconnexion</button>`
+                    ? `<button type="button" class="btn btn-danger" id="disconnectButton">Déconnexion</button>`
                     : `
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -147,6 +147,14 @@ async function createNavbar() {
           localStorage.setItem("user", JSON.stringify(response));
           window.location.reload();
         }
+      });
+  } else if (document.querySelector("#disconnectButton") != null) {
+    document
+      .querySelector("#disconnectButton")
+      .addEventListener("click", async (event) => {
+        event.preventDefault();
+        localStorage.clear();
+        window.location.reload();
       });
   }
 }
