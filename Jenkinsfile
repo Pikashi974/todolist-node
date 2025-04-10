@@ -24,7 +24,7 @@ pipeline {
                     bat 'git remote -v'
                     // bat 'git add .'
                     // bat 'git commit -am "Update from Jenkins"'
-                    bat 'git push heroku HEAD:main'
+                    bat 'git push heroku main:main'
                 }
             }
         }
