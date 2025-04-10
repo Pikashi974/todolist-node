@@ -6,13 +6,13 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                //
+                // Done by Node
                 bat 'npm install' 
             }
         }
         stage('Test') {
             steps {
-                //
+                // Done by Node
                 bat 'npm test'
             }
         }
