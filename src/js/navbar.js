@@ -314,22 +314,22 @@ async function createNavbar() {
       ],
       data: dataSet,
     });
+    document.querySelector(
+      "#addButtonZone"
+    ).innerHTML = `<button type="button" class="btn btn-success" id="addTaskButton" data-bs-toggle="modal" data-bs-target="#exampleModal">Ajouter une tâche</button>`;
+    //
+    document
+      .querySelector("#addUserForm")
+      .addEventListener("submit", async (event) => addTodo(event));
+    document
+      .querySelector("#editUserForm")
+      .addEventListener("submit", async (event) => editTodo(event));
+    document
+      .querySelector("#validateUserForm")
+      .addEventListener("submit", async (event) => validateTodo(event));
+    document
+      .querySelector("#deleteUserForm")
+      .addEventListener("submit", async (event) => deleteTodo(event));
   }
-  document.querySelector(
-    "#addButtonZone"
-  ).innerHTML = `<button type="button" class="btn btn-success" id="addTaskButton" data-bs-toggle="modal" data-bs-target="#exampleModal">Ajouter une tâche</button>`;
-  //
-  document
-    .querySelector("#addUserForm")
-    .addEventListener("submit", async (event) => addTodo(event));
-  document
-    .querySelector("#editUserForm")
-    .addEventListener("submit", async (event) => editTodo(event));
-  document
-    .querySelector("#validateUserForm")
-    .addEventListener("submit", async (event) => validateTodo(event));
-  document
-    .querySelector("#deleteUserForm")
-    .addEventListener("submit", async (event) => deleteTodo(event));
 }
 createNavbar();

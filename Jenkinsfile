@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         CI = 'true'
+        HEROKU_API_KEY = credentials('HerokuJenkins')
     }
     stages {
         stage('Build') {
@@ -18,7 +19,8 @@ pipeline {
         }
         stage('Deploy') { 
             steps {
-                bat 'npm start'
+                bat 'heroku git:remote -a todolist-app'
+                bat 'git push heroku main'
             }
         }
     }
