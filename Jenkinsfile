@@ -20,6 +20,7 @@ pipeline {
         stage('Deploy') { 
             steps {
                 withEnv(['heroku=C:/Program Files/heroku/bin']) {
+                    bat 'heroku auth:token'
                     bat 'heroku git:remote -a todolist-app'
                     bat 'git push heroku main'
                 }
