@@ -20,8 +20,10 @@ pipeline {
         stage('Deploy') { 
             steps {
                 withCredentials([usernameColonPassword(credentialsId: 'HerokuJenkins', variable: 'PASS')]) {
-                    bat 'heroku git:remote -a todolist-app'
-                    bat 'git push heroku main'
+                    withEnv(['heroku=C:/Program Files/heroku/bin']) {
+                        bat 'heroku git:remote -a todolist-app'
+                        bat 'git push heroku main'
+                    }
                 }
             }
         }
