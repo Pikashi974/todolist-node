@@ -20,8 +20,8 @@ pipeline {
             steps {
                 withEnv(['heroku=C:/Program Files/heroku/bin']) {
                     bat 'heroku git:remote -a todolist-app'
-                    bat 'heroku git add .'
-                    bat 'heroku git commit -am "Update from Jenkins"'
+                    bat 'git add .'
+                    bat 'git commit -am "Update from Jenkins"'
                     bat 'git push heroku main'
                 }
             }
