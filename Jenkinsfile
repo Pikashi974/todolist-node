@@ -2,7 +2,6 @@ pipeline {
     agent any
     environment {
         CI = 'true'
-        HEROKU_API_KEY = credentials('HerokuJenkins')
     }
     stages {
         stage('Build') {
