@@ -22,8 +22,8 @@ pipeline {
                     bat 'heroku whoami'
                     bat 'heroku git:remote -a todolist-app'
                     withCredentials([usernameColonPassword(credentialsId: 'Github1', variable: 'PASS')]) {
-                        bat 'git add .'
-                        bat 'git commit -am "Update from Jenkins"'
+                        // bat 'git add .'
+                        // bat 'git commit -am "Update from Jenkins"'
                         bat 'git push heroku main'
                     }
                 }
