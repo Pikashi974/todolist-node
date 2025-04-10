@@ -19,7 +19,116 @@ async function createNavbar() {
             </ul>
                 ${
                   isAuthenticated
-                    ? `<button type="button" class="btn btn-danger" id="disconnectButton">Déconnexion</button>`
+                    ? `
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body tab-content">
+                              <h3 class="card-header">Ajouter une tâche</h3>
+                                <form id="addUserForm" action="/newTask" method="post">
+                                    <fieldset>
+                                        <div>
+                                            <label for="titleInput" class="form-label mt-4">Titre</label>
+                                            <input required="" type="text" class="form-control" id="titleInput"
+                                                aria-describedby="emailHelp" placeholder="Entrez un titre"
+                                                name="name" required>
+                                            <small id="emailHelp" class="form-text text-muted">Préférez un nom unique</small>
+                                        </div>
+                                        <div>
+                                            <label for="descriptionInput" class="form-label mt-4">Description</label>
+                                            <textarea class="form-control" id="descriptionInput" placeholder="Décrivez votre tâche"
+                                                form="addUserForm" name="description"></textarea>
+                                        </div>
+                                        <div>
+                                            <label for="dateInput" class="form-label mt-4">A valider avant le:</label>
+                                            <input required="" type="datetime-local" class="form-control" id="dateInput"
+                                                aria-describedby="dateInput" placeholder="Entrez une date"
+                                                name="date" required>
+                                        </div>
+                                        <div>
+                                          <button type="submit" class="btn btn-success">Ajouter</button>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body tab-content">
+                            <h3 class="card-header">Editer la tâche</h3>
+                            <form id="editUserForm" action="/editTask" method="post">
+                                <fieldset>
+                                    <div>
+                                        <label for="titleInput" class="form-label mt-4">Titre</label>
+                                        <input required="" type="text" class="form-control" id="titleInput"
+                                            aria-describedby="emailHelp" placeholder="Entrez un titre" autocomplete="on"
+                                            name="name" required>
+                                        <small id="emailHelp" class="form-text text-muted">Préférez un nom unique</small>
+                                    </div>
+                                    <div>
+                                        <label for="descriptionInput" class="form-label mt-4">Description</label>
+                                        <textarea class="form-control" id="descriptionInput" placeholder="Décrivez votre tâche"
+                                            form="editUserForm" name="description"></textarea>
+                                    </div>
+                                    <div>
+                                        <label for="dateInput" class="form-label mt-4">A valider avant le:</label>
+                                        <input required="" type="datetime-local" class="form-control" id="dateInput"
+                                            aria-describedby="dateInput" placeholder="Entrez une date"
+                                            name="date" required>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="done">
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">Terminé</label>
+                                    </div>
+                                    <div>
+                                        <button type="submit" class="btn btn-warning">Modifier</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                            <input type="hidden" id="postId" name="postId" value="" />
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body tab-content">
+                            <h3 class="card-header">Valider la tâche</h3>
+                            <form id="validateUserForm" action="/editTask" method="post">
+                                <fieldset>
+                                    <div> 
+                                        <button type="submit" class="btn btn-success">Valider</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                            <input type="hidden" id="postId" name="postId" value="" />
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <div class="modal fade" id="exampleModal4" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body tab-content">
+                            <h3 class="card-header">Effacer la tâche</h3>
+                            <form id="deleteUserForm" action="/deleteTask" method="post">
+                                <fieldset>
+                                    <div> 
+                                        <button type="submit" class="btn btn-danger">Effacer</button>
+                                    </div>
+                                </fieldset>
+                            </form>
+                            <input type="hidden" id="postId" name="postId" value="" />
+                        </div>
+                    </div>
+                </div>
+              </div>
+                <button type="button" class="btn btn-danger" id="disconnectButton">Déconnexion</button>
+                    `
                     : `
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -90,7 +199,8 @@ async function createNavbar() {
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Connexion/Inscription</button>`
                 }
     `;
-  if (document.querySelector("button[type=submit]") != null) {
+  // Not Authenticated
+  if (document.querySelector("#disconnectButton") == null) {
     document
       .querySelector("#connectForm")
       .addEventListener("submit", async (event) => {
@@ -148,7 +258,10 @@ async function createNavbar() {
           window.location.reload();
         }
       });
-  } else if (document.querySelector("#disconnectButton") != null) {
+  }
+  // Authenticated
+  else {
+    document.querySelector(".card").classList.remove("d-none");
     document
       .querySelector("#disconnectButton")
       .addEventListener("click", async (event) => {
@@ -156,6 +269,67 @@ async function createNavbar() {
         localStorage.clear();
         window.location.reload();
       });
+    let dataSet = await getTasks();
+    new DataTable("#tableToday", {
+      columns: [
+        //[ "id", "documentId", "name", "date", "done", "createdAt", "updatedAt", "publishedAt", "description" ]
+        { title: "Titre", data: "name" },
+        { title: "Description", data: "description" },
+        { title: "Créé le", data: "createdAt" },
+        { title: "A finir le", data: "date" }, //false
+        {
+          title: "Terminé?",
+          data: function (row, type, val, meta) {
+            // console.log(row);
+            // console.log(type);
+            // console.log(val);
+            // console.log(meta);
+            return `${row.done ? "Oui" : "Non"}`;
+          },
+        },
+        {
+          title: "Actions",
+          data: function (row, type, val, meta) {
+            // console.log(row);
+            // console.log(type);
+            // console.log(val);
+            // console.log(meta);
+            return `${
+              row.done
+                ? ""
+                : `<button type="button" class="btn btn-outline-success"  onclick="initValidateTodo('${row.documentId}')" data-bs-toggle="modal" data-bs-target="#exampleModal3">Valider</button>`
+            }<button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#exampleModal2" onclick="initEditTodo('${
+              row.documentId
+            }')">Modifier</button><button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal4" onclick="initDeleteTodo('${
+              row.documentId
+            }')">Supprimer</button>`;
+          },
+        },
+      ],
+      columnDefs: [
+        {
+          targets: [2, 3],
+          render: DataTable.render.datetime("dd/MM/yyyy hh:mm:ss", "fr"),
+        },
+      ],
+      data: dataSet,
+    });
   }
+  document.querySelector(
+    "#addButtonZone"
+  ).innerHTML = `<button type="button" class="btn btn-success" id="addTaskButton" data-bs-toggle="modal" data-bs-target="#exampleModal">Ajouter une tâche</button>`;
+  //
+  document
+    .querySelector("#addUserForm")
+    .addEventListener("submit", async (event) => addTodo(event));
+  document
+    .querySelector("#editUserForm")
+    .addEventListener("submit", async (event) => editTodo(event));
+  document
+    .querySelector("#validateUserForm")
+    .addEventListener("submit", async (event) => validateTodo(event));
+  document
+    .querySelector("#deleteUserForm")
+    .addEventListener("submit", async (event) => deleteTodo(event));
 }
 createNavbar();

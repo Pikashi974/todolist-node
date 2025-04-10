@@ -23,7 +23,7 @@ app.get("/navbar", async (req, res) => {
   res.json(
     await fetch(
       process.env.LINK_API +
-        "/api/main-menu?populate[0]=MainMenuItems&populate[1]=MainMenuItems.menu&populate[2]=MainMenuItems.links"
+        "/main-menu?populate[0]=MainMenuItems&populate[1]=MainMenuItems.menu&populate[2]=MainMenuItems.links"
     ).then((res) => res.json())
   );
 });
@@ -40,31 +40,28 @@ app.post("/connect", async (req, res) => {
   };
 
   let response = await fetch(
-    process.env.LINK_API + "/api/auth/local",
+    process.env.LINK_API + "/auth/local",
     requestOptions
   )
     .then((res) => res.json())
     .catch((error) => console.log("error", error));
-  console.log(response);
+  // console.log(response);
   res.send(response);
 });
 app.post("/subscribe", async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   if (req.body.password == req.body.password2) {
-    let response = await fetch(
-      process.env.LINK_API + "/api/auth/local/register",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: req.body.username,
-          email: req.body.email,
-          password: req.body.password,
-        }),
-      }
-    ).then((res) => res.json());
+    let response = await fetch(process.env.LINK_API + "/auth/local/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
+      }),
+    }).then((res) => res.json());
     // console.log(response);
     // localStorage.setItem("user", response);
 
@@ -72,6 +69,118 @@ app.post("/subscribe", async (req, res) => {
   }
 
   res.sendStatus(400);
+});
+app.post("/tasks", async (req, res) => {
+  if (req.body.token != undefined && req.body.id != undefined) {
+    // console.log(process.env.LINK_API + `/users/me?populate=*`);
+
+    let response = await fetch(
+      process.env.LINK_API + `/tasks?filters[userID]=${req.body.id}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${req.body.token}`,
+        },
+      }
+    )
+      .then((res) => res.json())
+      .catch((error) => console.log("error", error));
+    // console.log(response);
+    res.send(response.data);
+  } else {
+    res.sendStatus(400);
+  }
+});
+
+app.post("/newTask", async (req, res) => {
+  if (req.body.token != undefined) {
+    let userObj = JSON.parse(req.body.id);
+    var requestOptions = {
+      method: "POST",
+      body: JSON.stringify({
+        data: {
+          name: req.body.name,
+          description: req.body.description,
+          date: req.body.date,
+          userID: userObj.id,
+        },
+      }),
+      redirect: "follow",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${req.body.token}`,
+      },
+    };
+    // console.log(requestOptions);
+
+    let response = await fetch(
+      process.env.LINK_API + "/tasks",
+      requestOptions
+    ).then((res) => res.json());
+    // console.log(response);
+    // localStorage.setItem("user", response);
+
+    res.send(response);
+  } else {
+    res.sendStatus(400);
+  }
+});
+app.post("/editTask", async (req, res) => {
+  // console.log(req.body);
+
+  if (req.body.token != undefined && req.body.id != undefined) {
+    var requestOptions = {
+      method: "PUT",
+      body: JSON.stringify({
+        data: {
+          name: req.body.name,
+          description: req.body.description,
+          date: req.body.date,
+          done: req.body.done,
+        },
+      }),
+      redirect: "follow",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${req.body.token}`,
+      },
+    };
+    // // console.log(requestOptions);
+
+    let response = await fetch(
+      process.env.LINK_API + `/tasks/${req.body.id}`,
+      requestOptions
+    ).then((res) => res.json());
+    // console.log(response);
+    // localStorage.setItem("user", response);
+
+    res.send(response);
+  } else {
+    res.sendStatus(400);
+  }
+});
+app.post("/deleteTask", async (req, res) => {
+  if (req.body.token != undefined && req.body.id != undefined) {
+    var requestOptions = {
+      method: "DELETE",
+      redirect: "follow",
+      headers: {
+        Authorization: `Bearer ${req.body.token}`,
+      },
+    };
+    // console.log(requestOptions);
+
+    let response = await fetch(
+      process.env.LINK_API + `/tasks/${req.body.id}`,
+      requestOptions
+    );
+    // console.log(response);
+    // localStorage.setItem("user", response);
+
+    res.send({ data: "" });
+  } else {
+    res.sendStatus(400);
+  }
 });
 
 app.listen(port, () => {
