@@ -269,6 +269,9 @@ async function createNavbar() {
         localStorage.clear();
         window.location.reload();
       });
+    document.querySelector(
+      "#addButtonZone"
+    ).innerHTML = `<button type="button" class="btn btn-success" id="addTaskButton" data-bs-toggle="modal" data-bs-target="#exampleModal">Ajouter une tâche</button>`;
     let dataSet = await getTasks();
     new DataTable("#tableToday", {
       columns: [
@@ -314,9 +317,6 @@ async function createNavbar() {
       ],
       data: dataSet,
     });
-    document.querySelector(
-      "#addButtonZone"
-    ).innerHTML = `<button type="button" class="btn btn-success" id="addTaskButton" data-bs-toggle="modal" data-bs-target="#exampleModal">Ajouter une tâche</button>`;
     //
     document
       .querySelector("#addUserForm")
