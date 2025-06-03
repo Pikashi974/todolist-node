@@ -24,7 +24,7 @@ async function createNavbar() {
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body tab-content">
-                              <h3 class="card-header">Ajouter une tâche</h3>
+                              <h3 class="card-header text-center">Ajouter une tâche</h3>
                                 <form id="addUserForm" action="/newTask" method="post">
                                     <fieldset>
                                         <div>
@@ -58,7 +58,7 @@ async function createNavbar() {
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body tab-content">
-                            <h3 class="card-header">Editer la tâche</h3>
+                            <h3 class="card-header text-center">Editer la tâche</h3>
                             <form id="editUserForm" action="/editTask" method="post">
                                 <fieldset>
                                     <div>
@@ -83,7 +83,7 @@ async function createNavbar() {
                                         <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="done">
                                         <label class="form-check-label" for="flexSwitchCheckDefault">Terminé</label>
                                     </div>
-                                    <div>
+                                    <div class="d-flex justify-content-center"> 
                                         <button type="submit" class="btn btn-warning">Modifier</button>
                                     </div>
                                 </fieldset>
@@ -100,7 +100,7 @@ async function createNavbar() {
                             <h3 class="card-header">Valider la tâche</h3>
                             <form id="validateUserForm" action="/editTask" method="post">
                                 <fieldset>
-                                    <div> 
+                                    <div class="d-flex justify-content-center"> 
                                         <button type="submit" class="btn btn-success">Valider</button>
                                     </div>
                                 </fieldset>
@@ -114,10 +114,10 @@ async function createNavbar() {
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body tab-content">
-                            <h3 class="card-header">Effacer la tâche</h3>
+                            <h3 class="card-header text-center">Effacer la tâche</h3>
                             <form id="deleteUserForm" action="/deleteTask" method="post">
                                 <fieldset>
-                                    <div> 
+                                    <div class="d-flex justify-content-center"> 
                                         <button type="submit" class="btn btn-danger">Effacer</button>
                                     </div>
                                 </fieldset>
