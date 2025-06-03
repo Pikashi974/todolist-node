@@ -49,7 +49,6 @@ app.post("/connect", async (req, res) => {
   res.send(response);
 });
 app.post("/subscribe", async (req, res) => {
-  // console.log(req.body);
   if (req.body.password == req.body.password2) {
     let response = await fetch(process.env.LINK_API + "/auth/local/register", {
       method: "POST",
@@ -62,7 +61,6 @@ app.post("/subscribe", async (req, res) => {
         password: req.body.password,
       }),
     }).then((res) => res.json());
-    // console.log(response);
     // localStorage.setItem("user", response);
 
     res.send(response);
@@ -85,7 +83,6 @@ app.post("/tasks", async (req, res) => {
     )
       .then((res) => res.json())
       .catch((error) => console.log("error", error));
-    // console.log(response);
     res.send(response.data);
   } else {
     res.sendStatus(400);
