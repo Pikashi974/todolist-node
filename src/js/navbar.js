@@ -45,7 +45,7 @@ async function createNavbar() {
                                                 aria-describedby="dateInput" placeholder="Entrez une date"
                                                 name="date" required>
                                         </div>
-                                        <div>
+                                        <div class="d-flex justify-content-center">
                                           <button type="submit" class="btn btn-success">Ajouter</button>
                                         </div>
                                     </fieldset>
@@ -97,7 +97,7 @@ async function createNavbar() {
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body tab-content">
-                            <h3 class="card-header">Valider la tâche</h3>
+                            <h3 class="card-header text-center">Valider la tâche</h3>
                             <form id="validateUserForm" action="/editTask" method="post">
                                 <fieldset>
                                     <div class="d-flex justify-content-center"> 
@@ -312,7 +312,7 @@ async function createNavbar() {
       columnDefs: [
         {
           targets: [2, 3],
-          render: DataTable.render.datetime("dd/MM/yyyy hh:mm:ss", "fr"),
+          render: DataTable.render.datetime("dd/MM/yyyy hh:mm:ss"),
         },
       ],
       data: dataSet,
