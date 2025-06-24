@@ -1,3 +1,4 @@
+Notification.requestPermission();
 async function createNavbar() {
   let data = await fetch("/navbar").then((res) => res.json());
   let isAuthenticated =
@@ -258,12 +259,14 @@ async function createNavbar() {
           window.location.reload();
         }
       });
-      document.querySelector("main").innerHTML += `<div class="align-items-center d-flex justify-content-center text-center">
+    document.querySelector(
+      "main"
+    ).innerHTML += `<div class="align-items-center d-flex justify-content-center text-center">
     <div>
     <h2>To-do-list</h2>
 <p>L'application web To-do-list a pour but de vous permettre de reseigner vos tâches et suivre leur avancement.</p>
 <p>Après vous être inscrit ou connecté, vous pourrez suivre vos tâches aussi bien sur le web que sur votre téléphone.</p></div>
-</div>`
+</div>`;
   }
   // Authenticated
   else {
@@ -364,6 +367,28 @@ async function createNavbar() {
         },
       ],
       data: dataSet.filter((element) => element["done"]),
+    });
+    dataSet
+      .filter((element) => element["done"] == false)
+      .forEach(async (element) => {
+        var requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: socket.id,
+            id: JSON.parse(localStorage.getItem("user")).user.id,
+            token: JSON.parse(localStorage.getItem("user")).jwt,
+            title: element.name,
+            description: element.description,
+            date: element.date,
+            done: element.done,
+          }),
+        };
+        await fetch("/scheduleTask", requestOptions);
+      });
+    socket.on(`notification_${socket.id}`, (notification) => {
+      // console.log(notification);
+      notifyMe(notification.message.title, notification.message.description);
     });
     //
     document

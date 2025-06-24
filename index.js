@@ -1,8 +1,14 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-const jwt = require("jsonwebtoken");
+const http = require("http");
+const socketIo = require("socket.io");
+const server = http.createServer(app);
+const io = socketIo(server);
+
 const path = require("path");
+const schedule = require("node-schedule");
+const { DateTime } = require("luxon");
 const port = process.env.PORT || 3000;
 
 require("dotenv").config();
@@ -88,7 +94,6 @@ app.post("/tasks", async (req, res) => {
     res.sendStatus(400);
   }
 });
-
 app.post("/newTask", async (req, res) => {
   if (req.body.token != undefined) {
     let userObj = JSON.parse(req.body.id);
@@ -179,7 +184,93 @@ app.post("/deleteTask", async (req, res) => {
     res.sendStatus(400);
   }
 });
+app.post("/scheduleTask", async (req, res) => {
+  // console.log(req.body);
+  const userId = req.body.userId;
+  // console.log(userId);
 
-app.listen(port, () => {
+  if (
+    req.body.token != undefined &&
+    req.body.id != undefined &&
+    req.body.done != true
+  ) {
+    let message = {
+      userId: userId,
+      title: req.body.title,
+      description: req.body.description,
+      date: req.body.date,
+      done: req.body.done,
+    };
+    if (
+      DateTime.local() < DateTime.fromISO(req.body.date).minus({ minutes: 10 })
+    ) {
+      message.title += " M-10";
+      scheduleNotification(
+        DateTime.fromISO(req.body.date)
+          .minus({ minutes: 10 })
+          .toISO({ includeOffset: false }),
+        message
+      );
+      if (
+        DateTime.local() < DateTime.fromISO(req.body.date).minus({ day: 1 })
+      ) {
+        message.title = message.title.replace("M-10", "J-1");
+        scheduleNotification(
+          DateTime.fromISO(req.body.date)
+            .minus({ day: 1 })
+            .toISO({ includeOffset: false }),
+          message
+        );
+        if (
+          DateTime.local() < DateTime.fromISO(req.body.date).minus({ day: 2 })
+        ) {
+          message.title = message.title.replace("J-1", "J-2");
+          scheduleNotification(
+            DateTime.fromISO(req.body.date)
+              .minus({ day: 2 })
+              .toISO({ includeOffset: false }),
+            message
+          );
+        }
+      }
+    }
+
+    // console.log(response);
+    // localStorage.setItem("user", response);
+
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(400);
+  }
+});
+server.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
+io.on("connection", (socket) => {
+  // console.log("A client connected");
+  // console.log(socket);
+});
+
+/**
+ *
+ * @param {string} date
+ * @param {JSON} message
+ * @returns
+ */
+scheduleNotification = (date, message) => {
+  // const dateInTimeZone = moment.tz(date);
+  // const job = schedule.scheduleJob(dateInTimeZone.toDate(), function () {
+  //   notifyMe(message.title, message.description);
+  // });
+  const job = schedule.scheduleJob(
+    DateTime.fromISO(date).toJSDate(),
+    function () {
+      io.emit(`notification_${message.userId}`, { message });
+      // console.log(`notification_${message.userId}`);
+      // console.log(message);
+    }
+  );
+  return job;
+};
+
+module.exports = { io };
