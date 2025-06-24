@@ -52,7 +52,8 @@ async function initEditTodo(id) {
     .querySelector("#exampleModal2")
     .querySelector("#descriptionInput").value = task.description;
   document.querySelector("#exampleModal2").querySelector("#dateInput").value =
-    task.date.replace("Z", "");
+    // task.date.replace("Z", "");
+    luxon.DateTime.fromISO(task.date).toISO({ includeOffset: false });
 
   document
     .querySelector("#exampleModal2")

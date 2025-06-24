@@ -127,7 +127,7 @@ async function createNavbar() {
                     </div>
                 </div>
               </div>
-                <button type="button" class="btn btn-danger" id="disconnectButton">Déconnexion</button>
+                <button type="button" class="btn btn-danger" id="disconnectButton"><i class="bi bi-power"></i>Déconnexion</button>
                     `
                     : `
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -258,10 +258,18 @@ async function createNavbar() {
           window.location.reload();
         }
       });
+      document.querySelector("main").innerHTML += `<div class="align-items-center d-flex justify-content-center text-center">
+    <div>
+    <h2>To-do-list</h2>
+<p>L'application web To-do-list a pour but de vous permettre de reseigner vos tâches et suivre leur avancement.</p>
+<p>Après vous être inscrit ou connecté, vous pourrez suivre vos tâches aussi bien sur le web que sur votre téléphone.</p></div>
+</div>`
   }
   // Authenticated
   else {
-    document.querySelector(".card").classList.remove("d-none");
+    document
+      .querySelectorAll(".card")
+      .forEach((card) => card.classList.remove("d-none"));
     document
       .querySelector("#disconnectButton")
       .addEventListener("click", async (event) => {
@@ -271,7 +279,9 @@ async function createNavbar() {
       });
     document.querySelector(
       "#addButtonZone"
-    ).innerHTML = `<button type="button" class="btn btn-success" id="addTaskButton" data-bs-toggle="modal" data-bs-target="#exampleModal">Ajouter une tâche</button>`;
+    ).innerHTML = `<button type="button" class="btn btn-success" id="addTaskButton" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <i class="bi bi-plus-circle"></i>Ajouter une tâche
+    </button>`;
     let dataSet = await getTasks();
     new DataTable("#tableToday", {
       columns: [
@@ -312,10 +322,48 @@ async function createNavbar() {
       columnDefs: [
         {
           targets: [2, 3],
-          render: DataTable.render.datetime("dd/MM/yyyy hh:mm:ss"),
+          render: DataTable.render.datetime("dd/MM/yyyy HH:mm:ss"),
         },
       ],
-      data: dataSet,
+      data: dataSet.filter((element) => element["done"] == false),
+    });
+    new DataTable("#tableOld", {
+      columns: [
+        //[ "id", "documentId", "name", "date", "done", "createdAt", "updatedAt", "publishedAt", "description" ]
+        { title: "Titre", data: "name" },
+        { title: "Description", data: "description" },
+        { title: "Créé le", data: "createdAt" },
+        { title: "A finir le", data: "date" }, //false
+        {
+          title: "Terminé le",
+          data: "updatedAt",
+        },
+        {
+          title: "Actions",
+          data: function (row, type, val, meta) {
+            // console.log(row);
+            // console.log(type);
+            // console.log(val);
+            // console.log(meta);
+            return `${
+              row.done
+                ? ""
+                : `<button type="button" class="btn btn-outline-success"  onclick="initValidateTodo('${row.documentId}')" data-bs-toggle="modal" data-bs-target="#exampleModal3">Valider</button>`
+            }<button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#exampleModal2" onclick="initEditTodo('${
+              row.documentId
+            }')">Modifier</button><button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal4" onclick="initDeleteTodo('${
+              row.documentId
+            }')">Supprimer</button>`;
+          },
+        },
+      ],
+      columnDefs: [
+        {
+          targets: [2, 3, 4],
+          render: DataTable.render.datetime("dd/MM/yyyy HH:mm:ss"),
+        },
+      ],
+      data: dataSet.filter((element) => element["done"]),
     });
     //
     document
